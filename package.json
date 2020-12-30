@@ -9,6 +9,7 @@
   "author": "Brody Dingel",
   "license": "ISC",
   "dependencies": {
-    "@hapi/hapi": "^20.0.3"
+    "@hapi/hapi": "^20.0.3",
+    "dotenv": "^8.2.0"
   }
 }

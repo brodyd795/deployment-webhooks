@@ -1,21 +1,45 @@
-'use strict';
-
 const Hapi = require('@hapi/hapi');
+const {exec} = require('child_process');
+require('dotenv').config();
+
+const handler = (request, h) => {
+    try {
+        const {project, env, password} = request.payload;
+
+        if (!project || !env || !password) {
+            throw new Error("Didn't pass in correct stuff.");
+        }
+
+        const scriptPath = `${process.env.COMMON_PATH}/${project}/${env}/${project}/${process.env.SCRIPT_NAME}`;
+
+        exec('ls -a', (err, stdout, sterr) => {
+            console.log('scriptPath', scriptPath);
+            if (err !== null) {
+                console.log('exec err: ', err);
+            }
+        });
+    
+        return {
+            project,
+            env,
+            password
+        };
+    } catch (error) {
+        return `An error occurred. ${error}`
+    }
+}
 
 const init = async () => {
 
     const server = Hapi.server({
-        port: 3000,
+        port: 8082,
         host: 'localhost'
     });
 
     server.route({
-        method: 'GET',
+        method: 'POST',
         path: '/',
-        handler: (request, h) => {
-
-            return 'Hello World!';
-        }
+        handler: handler
     });
 
     await server.start();
