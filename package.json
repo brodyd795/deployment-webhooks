@@ -1,0 +1,14 @@
+{
+  "name": "deployment-webhooks",
+  "version": "1.0.0",
+  "description": "Webhooks for deploying apps",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Brody Dingel",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^20.0.3"
+  }
+}
