@@ -12,7 +12,9 @@ const handler = (request, h) => {
 
         const scriptPath = `${process.env.COMMON_PATH}/${project}/${env}/${project}/${process.env.SCRIPT_NAME}`;
 
-        exec('ls -a', (err, stdout, sterr) => {
+        exec(`bash ${scriptPath}`, (err, stdout, sterr) => {
+	    console.log('stdout: ', stdout);
+	    console.log('sterr: ', sterr);
             console.log('scriptPath', scriptPath);
             if (err !== null) {
                 console.log('exec err: ', err);
