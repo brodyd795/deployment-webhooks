@@ -1,33 +1,29 @@
 const Hapi = require('@hapi/hapi');
-const {exec} = require('child_process');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 require('dotenv').config();
 
-const handler = (request) => {
-    try {
-        const {project, env, password} = request.payload;
+const handler = async (request) => {
+    const {project, env, password} = request.payload;
+    const scriptPath = `${process.env.COMMON_PATH}/${project}/${env}/${project}/${process.env.SCRIPT_NAME}`;
 
+    try {
         if (!project || !env || !password) {
-            throw new Error("Didn't pass in correct stuff.");
+            return (`Failed to pass in necessary payload. Payload received: ${JSON.stringify(request.payload)}`);
         }
 
-        const scriptPath = `${process.env.COMMON_PATH}/${project}/${env}/${project}/${process.env.SCRIPT_NAME}`;
-
-        exec(`bash ${scriptPath}`, (error) => {
-            if (error) {
-                if (error.message.includes('No such file or directory')) {
-                    console.log('File not found: ', scriptPath);
-                } else {
-                    console.log(`Unhandled error while running deployment script ${scriptPath}: `, error);
-                }
-            }
-        });
-    
+        await exec(`bash ${scriptPath}`);
+        
         return {
             project,
             env,
             password
         };
     } catch (error) {
+        if (error.message.includes('No such file or directory')) {
+            return `File not found at path ${scriptPath}`;
+        }
+
         return `An unhandled error occurred. ${error}`
     }
 }
