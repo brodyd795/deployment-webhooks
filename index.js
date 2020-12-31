@@ -9,7 +9,7 @@ const handler = async (request) => {
 
     try {
         if (!project || !env || !password) {
-            return (`Failed to pass in necessary payload. Payload received: ${JSON.stringify(request.payload)}`);
+            return `Failed to pass in necessary payload. Payload received: ${JSON.stringify(request.payload)}`;
         }
 
         await exec(`bash ${scriptPath}`);
