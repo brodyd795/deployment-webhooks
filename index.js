@@ -12,10 +12,13 @@ const handler = (request, h) => {
 
         const scriptPath = `${process.env.COMMON_PATH}/${project}/${env}/${project}/${process.env.SCRIPT_NAME}`;
 
-        exec('ls -a', (err, stdout, sterr) => {
-            console.log('scriptPath', scriptPath);
-            if (err !== null) {
-                console.log('exec err: ', err);
+        exec(`bash ${scriptPath}`, (error) => {
+            if (error) {
+                if (error.message.includes("No such file or directory")) {
+                    console.log('File not found: ', scriptPath);
+                } else {
+                    console.log(`Unhandled error while running deployment script ${scriptPath}: `, error);
+                }
             }
         });
     
@@ -25,12 +28,11 @@ const handler = (request, h) => {
             password
         };
     } catch (error) {
-        return `An error occurred. ${error}`
+        return `An unhandled error occurred. ${error}`
     }
 }
 
 const init = async () => {
-
     const server = Hapi.server({
         port: 8082,
         host: 'localhost'
@@ -39,17 +41,11 @@ const init = async () => {
     server.route({
         method: 'POST',
         path: '/',
-        handler: handler
+        handler
     });
 
     await server.start();
     console.log('Server running on %s', server.info.uri);
 };
-
-process.on('unhandledRejection', (err) => {
-
-    console.log(err);
-    process.exit(1);
-});
 
 init();
