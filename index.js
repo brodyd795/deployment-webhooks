@@ -2,7 +2,7 @@ const Hapi = require('@hapi/hapi');
 const {exec} = require('child_process');
 require('dotenv').config();
 
-const handler = (request, h) => {
+const handler = (request) => {
     try {
         const {project, env, password} = request.payload;
 
@@ -14,7 +14,7 @@ const handler = (request, h) => {
 
         exec(`bash ${scriptPath}`, (error) => {
             if (error) {
-                if (error.message.includes("No such file or directory")) {
+                if (error.message.includes('No such file or directory')) {
                     console.log('File not found: ', scriptPath);
                 } else {
                     console.log(`Unhandled error while running deployment script ${scriptPath}: `, error);
