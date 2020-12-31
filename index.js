@@ -14,11 +14,7 @@ const handler = async (request) => {
 
         await exec(`bash ${scriptPath}`);
         
-        return {
-            project,
-            env,
-            password
-        };
+        return `Successfully ran deployment script at ${scriptPath}`;
     } catch (error) {
         if (error.message.includes('No such file or directory')) {
             return `File not found at path ${scriptPath}`;
