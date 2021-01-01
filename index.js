@@ -13,7 +13,7 @@ const handler = async (req, h) => {
             return h.response('Failed to pass in necessary payload').code(400);
         }
 
-        await exec(`bash ${scriptPath}`);
+        await exec(`bash ${scriptPath} > ${process.env.LOGS_PATH} 2>&1`);
         
         console.log(`${new Date()} Successfully ran deployment script at ${scriptPath}`);
         return h.response(`Successfully ran deployment script at ${scriptPath}`).code(200);
@@ -41,7 +41,7 @@ const init = async () => {
     });
 
     await server.start();
-    console.log('Server running on %s', server.info.uri);
+    console.log(`${new Date()} Deployment webhooks server started on ${server.info.uri}`);
 };
 
 init();
