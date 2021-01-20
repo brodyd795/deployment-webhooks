@@ -3,17 +3,17 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 require('dotenv').config();
 
-const handler = async (req, h) => {
-    const {project, env, password} = req.payload;
-    const scriptPath = `${process.env.COMMON_PATH}/${project}/${env}/${project}/${process.env.SCRIPT_NAME}`;
-
+const handler = (req, h) => {
     try {
+        const {project, env, password} = req.payload;
+        const scriptPath = `${process.env.COMMON_PATH}/${project}/${env}/${project}/${process.env.SCRIPT_NAME}`;
+
         if (!project || !env || !password) {
             console.log(`${new Date()} Failed to pass in necessary payload. Payload received: ${JSON.stringify(req.payload)}`);
             return h.response('Failed to pass in necessary payload').code(400);
         }
-
-        await exec(`bash ${scriptPath} > ${process.env.LOGS_PATH} 2>&1`);
+        
+        exec(`bash ${scriptPath} > ${process.env.LOGS_PATH} 2>&1`);
         
         console.log(`${new Date()} Successfully ran deployment script at ${scriptPath}`);
         return h.response(`Successfully ran deployment script at ${scriptPath}`).code(200);
@@ -36,7 +36,7 @@ const init = async () => {
 
     server.route({
         method: 'POST',
-        path: '/',
+        path: '/deploy',
         handler
     });
 
