@@ -10,8 +10,13 @@ const handler = (req, h) => {
 
         if (!project || !env || !password) {
             console.log(`${new Date()} Failed to pass in necessary payload. Payload received: ${JSON.stringify(req.payload)}`);
-            return h.response('Failed to pass in necessary payload').code(400);
+            return h.response(`Failed to pass in necessary payload: ${JSON.stringify(req.payload)}`).code(400);
         }
+
+	if (password !== process.env.PASSWORD) {
+	    console.log(`${new Date()} Incorrect password.`);
+	    return h.response('Incorrect password.').code(400);
+	}
         
         exec(`bash ${scriptPath} > ${process.env.LOGS_PATH} 2>&1`);
         
@@ -24,7 +29,7 @@ const handler = (req, h) => {
         }
 
         console.log(`${new Date()} An unhandled error occurred. ${error}`);
-        return h.response('An unhandled error occurred').code(400);
+        return h.response(`An unhandled error occurred: ${JSON.stringify(error)}`).code(400);
     }
 }
 
